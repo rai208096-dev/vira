@@ -3061,46 +3061,48 @@ PREMIUM FOOTER — Glassmorphism + SVG Waves + Cyan Accents
         return true;
     }
 
-    // Handle all anchor links with href starting with "#" (including nav, footer, read-more)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            // Skip empty or just "#"
-            if (!href || href === '#') return;
+    // Handle all anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
 
-            // If it's a nav link inside the mobile menu, close the menu first
-            const isNavLink = this.closest('.nav-links') !== null;
-            const isMobileMenuOpen = navLinks.classList.contains('open');
+        const href = this.getAttribute('href');
 
-            if (isNavLink && isMobileMenuOpen) {
-                // Close menu immediately (no delay)
-                closeMenu();
-                // Small delay to let the menu close animation start, then scroll
-                e.preventDefault();
-                setTimeout(() => {
-                    smoothScrollTo(href);
-                }, 120);
-                return;
-            }
+        if (!href || href === '#') return;
 
-            // For all other # links (footer, read-more, etc.)
-            e.preventDefault();
-            smoothScrollTo(href);
-        });
-    });
+        const target = document.querySelector(href);
 
-    // Also handle the logo link (href="#") - scroll to top
-    document.getElementById('logoLink').addEventListener('click', function(e) {
+        // Agar target exist nahi karta to browser ka default behavior use hone do
+        if (!target) return;
+
         e.preventDefault();
+
+        // Mobile menu close
         if (navLinks.classList.contains('open')) {
             closeMenu();
-            setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 120);
-        } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Smooth scroll
+        target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
     });
+});
+
+// Logo click
+document.getElementById('logoLink').addEventListener('click', function(e){
+    e.preventDefault();
+
+    if(navLinks.classList.contains('open')){
+        closeMenu();
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+});
 
     // ----- ACTIVE NAV LINK (scroll spy) -----
     function updateActiveNav() {
